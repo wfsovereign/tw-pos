@@ -12,7 +12,7 @@ var AllItem = [
 
 
 describe('ThoughtWorks homework', function () {
-    var result = '***<没钱赚商店>购物清单***\n' +
+    var result1 = '***<没钱赚商店>购物清单***\n' +
         '名称：可口可乐，数量：3瓶，单价：3.00(元)，小计：9.00(元)\n' +
         '名称：羽毛球，数量：5个，单价：1.00(元)，小计：5.00(元)\n' +
         '名称：苹果，数量：2斤，单价：5.50(元)，小计：11.00(元)\n' +
@@ -20,13 +20,48 @@ describe('ThoughtWorks homework', function () {
         '总计：25.00(元)\n' +
         '**********************\n';
 
-    it('结果等于结果，初始化测试', function (done) {
-        should(result).eql(result);
+    var result2 = '***<没钱赚商店>购物清单***\n' +
+        '名称：可口可乐，数量：3瓶，单价：3.00(元)，小计：6.00(元)\n' +
+        '名称：羽毛球，数量：5个，单价：1.00(元)，小计：4.00(元)\n' +
+        '名称：苹果，数量：2斤，单价：5.50(元)，小计：11.00(元)\n' +
+        '----------------------\n' +
+        '买二赠一商品：\n' +
+        '名称：可口可乐，数量：1瓶\n' +
+        '名称：羽毛球，数量：1个\n' +
+        '----------------------\n' +
+        '总计：21.00(元)\n' +
+        '节省：4.00(元)\n' +
+        '**********************\n';
+
+    var result3 = '***<没钱赚商店>购物清单***\n' +
+        '名称：可口可乐，数量：3瓶，单价：3.00(元)，小计：9.00(元)\n' +
+        '名称：羽毛球，数量：5个，单价：1.00(元)，小计：5.00(元)\n' +
+        '名称：苹果，数量：2斤，单价：5.50(元)，小计：10.45(元)，节省0.55(元)\n' +
+        '----------------------\n' +
+        '总计：24.45(元)\n' +
+        '节省：0.55(元)\n' +
+        '**********************\n';
+
+    var result4 = '***<没钱赚商店>购物清单***\n' +
+        '名称：可口可乐，数量：3瓶，单价：3.00(元)，小计：6.00(元)\n' +
+        '名称：羽毛球，数量：6个，单价：1.00(元)，小计：4.00(元)\n' +
+        '名称：苹果，数量：2斤，单价：5.50(元)，小计：10.45(元)，节省0.55(元)\n' +
+        '----------------------\n' +
+        '买二赠一商品：\n' +
+        '名称：可口可乐，数量：1瓶\n' +
+        '名称：羽毛球，数量：2个\n' +
+        '----------------------\n' +
+        '总计：20.45(元)\n' +
+        '节省：5.55(元)\n' +
+        '**********************\n';
+
+    it('1 结果等于结果，初始化测试', function (done) {
+        should(result1).eql(result1);
         done();
     });
 
 
-    it('抽出控制中心用作打印的模块', function (done) {
+    it('2 控制中心用作打印的模块，无优惠商品', function (done) {
         var box = {
             items: [
                 {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 9.00},
@@ -38,13 +73,77 @@ describe('ThoughtWorks homework', function () {
 
         var printResult = controllerCenter.print(box);
         console.log(printResult);
-        should(printResult).eql(result);
+        should(printResult).eql(result1);
+        done()
+    });
+
+    it('3 控制中心用作打印的模块，有符合“买二赠一”优惠条件商品', function (done) {
+        var box = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 6.00},
+                {name: '羽毛球', count: 5, unit: '个', price: 1.00, subtotal: 4.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 11.00}
+            ],
+            present: [{
+                name: '买二赠一',
+                items: [
+                    {name: '可口可乐', count: 1, unit: '瓶'},
+                    {name: '羽毛球', count: 1, unit: '个'}]
+            }],
+            total: 21.00,
+            economy: 4.00
+        };
+
+        var printResult = controllerCenter.print(box);
+        console.log('++++++  ', printResult);
+        should(printResult).eql(result2);
+        done()
+    });
+
+    it('4 控制中心用作打印的模块，有符合“95折”优惠条件商品', function (done) {
+        var box = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 9.00},
+                {name: '羽毛球', count: 5, unit: '个', price: 1.00, subtotal: 5.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 10.45, economize: 0.55}
+            ],
+            total: 24.45,
+            economy: 0.55
+        };
+
+        var printResult = controllerCenter.print(box);
+        console.log('==================ti');
+        console.log('++++++  ', printResult);
+        should(printResult).eql(result3);
+        done()
+    });
+
+    it('5 控制中心用作打印的模块，有符合“95折”优惠条件的商品，又有符合“买二赠一”优惠条件商品', function (done) {
+        var box = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 6.00},
+                {name: '羽毛球', count: 6, unit: '个', price: 1.00, subtotal: 4.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 10.45, economize: 0.55}
+            ],
+            present: [{
+                name: '买二赠一',
+                items: [
+                    {name: '可口可乐', count: 1, unit: '瓶'},
+                    {name: '羽毛球', count: 2, unit: '个'}]
+            }],
+            total: 20.45,
+            economy: 5.55
+        };
+
+        var printResult = controllerCenter.print(box);
+        console.log('==================ti');
+        console.log('++++++  ', printResult);
+        should(printResult).eql(result4);
         done()
     });
 
 
-
-
+    it('控制中心的计价模块')
 
 
 });
