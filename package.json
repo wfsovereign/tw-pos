@@ -1,0 +1,17 @@
+{
+  "name": "tw_pos",
+  "version": "1.0.0",
+  "description": "homework",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "homework",
+    "tw"
+  ],
+  "author": "wfsovereign",
+  "license": "ISC"
+}
