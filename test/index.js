@@ -1,6 +1,6 @@
 var should = require('should');
 var Item = require('../src/model/item');
-var privilege = require('../src/model/privilege');
+var Privilege = require('../src/model/privilege');
 var controllerCenter = require('../src/controller_center');
 
 
@@ -72,7 +72,6 @@ describe('ThoughtWorks homework', function () {
         };
 
         var printResult = controllerCenter.print(box);
-        console.log(printResult);
         should(printResult).eql(result1);
         done()
     });
@@ -95,7 +94,6 @@ describe('ThoughtWorks homework', function () {
         };
 
         var printResult = controllerCenter.print(box);
-        console.log('++++++  ', printResult);
         should(printResult).eql(result2);
         done()
     });
@@ -112,8 +110,6 @@ describe('ThoughtWorks homework', function () {
         };
 
         var printResult = controllerCenter.print(box);
-        console.log('==================ti');
-        console.log('++++++  ', printResult);
         should(printResult).eql(result3);
         done()
     });
@@ -136,14 +132,56 @@ describe('ThoughtWorks homework', function () {
         };
 
         var printResult = controllerCenter.print(box);
-        console.log('==================ti');
-        console.log('++++++  ', printResult);
         should(printResult).eql(result4);
         done()
     });
 
 
-    it('控制中心的计价模块')
+    it('6 控制中心的计价模块, 没有符合“买二赠一”优惠条件的商品', function (done) {
+        var box = [
+            {name: '可口可乐', count: 3, unit: '瓶', price: 3.00},
+            {name: '羽毛球', count: 6, unit: '个', price: 1.00},
+            {name: '苹果', count: 2, unit: '斤', price: 5.50}
+        ];
+        var expireBox = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 9.00},
+                {name: '羽毛球', count: 6, unit: '个', price: 1.00, subtotal: 6.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 11.00}
+            ],
+            total: 26.00
+        };
+        var calculatedBox = controllerCenter.calculator(box);
+        should(calculatedBox).eql(expireBox);
+        done();
+    });
 
+
+    it('7 控制中心的计价模块, 有符合“买二赠一”优惠条件的商品', function (done) {
+        var box = [
+            {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, barcode: 'ITEM000000'},
+            {name: '羽毛球', count: 5, unit: '个', price: 1.00, barcode: 'ITEM000001'},
+            {name: '苹果', count: 2, unit: '斤', price: 5.50, barcode: 'ITEM000002'}
+        ];
+        var privilege = new Privilege('two_gift_one', '买二赠一', 1, ['ITEM000000', 'ITEM000001']);
+        var expireBox = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 6.00},
+                {name: '羽毛球', count: 5, unit: '个', price: 1.00, subtotal: 4.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 11.00}
+            ],
+            present: [{
+                name: '买二赠一',
+                items: [
+                    {name: '可口可乐', count: 1, unit: '瓶'},
+                    {name: '羽毛球', count: 1, unit: '个'}]
+            }],
+            total: 21.00,
+            economy: 4.00
+        };
+        var calculatedBox = controllerCenter.calculator(box, privilege);
+        should(calculatedBox).eql(expireBox);
+        done();
+    });
 
 });

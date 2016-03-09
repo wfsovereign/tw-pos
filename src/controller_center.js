@@ -4,6 +4,19 @@ function ControllerCenter() {
 }
 
 
+ControllerCenter.calculator = function (box, privilege) {
+    console.log('privilege: ', privilege);
+    var closingData = {items: []}, total = 0;
+    box.forEach(ele => {
+        ele.subtotal = ele.count * ele.price;
+        closingData.items.push(ele);
+        total += ele.subtotal;
+    });
+    closingData.total = total;
+    return closingData;
+};
+
+
 ControllerCenter.print = function (box) {
     function getStrOfPrice(price) {
         return price.toFixed(2);
