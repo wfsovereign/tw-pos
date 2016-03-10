@@ -36,6 +36,12 @@ ControllerCenter.calculator = function (box, privilege) {
                 gift.items = gift.items || [];
                 gift.items.push({name: item.name, unit: item.unit, count: giftCount});
             }
+        } else if (currentUsePrivilege.name = 'discount_of_95') {
+            var subtotal = item.count * item.price;
+            item.subtotal = subtotal * 0.95;
+            item.economize = subtotal * 0.05;
+            closingData.economy = closingData.economy || 0;
+            closingData.economy += item.economize;
         }
 
         present = [gift];
@@ -52,7 +58,7 @@ ControllerCenter.calculator = function (box, privilege) {
         total += ele.subtotal;
     });
     closingData.total = total;
-    if (present[0]) closingData.present = present;
+    if (present[0] && present[0].name) closingData.present = present;
     console.log('-------------------------');
 
     console.log('closing data: ', JSON.stringify(closingData));

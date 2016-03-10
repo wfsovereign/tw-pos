@@ -184,4 +184,26 @@ describe('ThoughtWorks homework', function () {
         done();
     });
 
+
+    it('8 控制中心的计价模块, 有符合“95折”优惠条件的商品', function (done) {
+        var box = [
+            {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, barcode: 'ITEM000000'},
+            {name: '羽毛球', count: 5, unit: '个', price: 1.00, barcode: 'ITEM000001'},
+            {name: '苹果', count: 2, unit: '斤', price: 5.50, barcode: 'ITEM000002'}
+        ];
+        var privilege = [new Privilege('discount_of_95', '95折', 1, ['ITEM000002'])];
+        var expireBox = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 9.00},
+                {name: '羽毛球', count: 5, unit: '个', price: 1.00, subtotal: 5.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 10.45, economize: 0.55}
+            ],
+            total: 24.45,
+            economy: 0.55
+        };
+        var calculatedBox = controllerCenter.calculator(box, privilege);
+        should(calculatedBox).eql(expireBox);
+        done();
+    });
+
 });
