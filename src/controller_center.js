@@ -1,11 +1,37 @@
 var _ = require('lodash');
-
+var Item = require('./model/item');
+var co = require('co');
 function ControllerCenter() {
 
 
 }
 
+ControllerCenter.shoppingCart = function (input) {
+    var AllItem = [
+        new Item('ITEM000000', '可口可乐', '瓶', 3.00),
+        new Item('ITEM000001', '羽毛球', '个', 1.00),
+        new Item('ITEM000002', '苹果', '斤', 5.50)
+    ];
 
+    var normalized = _.chain(input).groupBy(function (o) {
+        return o;
+    }).map(function (value, key) {
+        var bar = key, count = value.length;
+        if (key.indexOf('-') > -1) {
+            var barAndCount = key.split('-');
+            bar = barAndCount[0];
+            count = +barAndCount[1];
+        }
+        return {barcode: bar, count: count};
+    }).map(function (ele) {
+        var item = _.find(AllItem, function (item) {
+            return item.barcode === ele.barcode;
+        });
+        if (item) return {barcode: item.barcode, count: ele.count, unit: item.unit, price: item.price, name: item.name};
+    }).compact().value();
+    console.log('ooooo :', normalized);
+    return normalized;
+};
 
 
 ControllerCenter.calculator = function (box, privilege) {

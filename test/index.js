@@ -267,19 +267,23 @@ describe('ThoughtWorks homework', function () {
 
 
     it('11 收银机扫描仪模块，将文本数据转化为JSON数据', function (done) {
-        var expireData = ['ITEM000001',
-            'ITEM000001',
-            'ITEM000001',
-            'ITEM000001',
-            'ITEM000001',
-            'ITEM000003-2',
-            'ITEM000005',
-            'ITEM000005',
-            'ITEM000005'];
+        var expireData = ['ITEM000001', 'ITEM000001', 'ITEM000001', 'ITEM000001', 'ITEM000001',
+            'ITEM000003-2', 'ITEM000005', 'ITEM000005', 'ITEM000005'];
         var scannedData = scanner(require('path').join(__dirname, '../src/data/input.txt'));
         should(scannedData).eql(expireData);
         done();
     });
 
+
+    it('12 控制中心购物车模块，将收银机传入的数据转化为可用于计算的数据（附带count）', function (done) {
+        var originalData = ['ITEM000001', 'ITEM000001', 'ITEM000001', 'ITEM000001', 'ITEM000001',
+            'ITEM000002-2', 'ITEM000000', 'ITEM000000', 'ITEM000000'];
+        var expireData = [{name: '羽毛球', count: 5, unit: '个', price: 1.00, barcode: 'ITEM000001'},
+            {name: '苹果', count: 2, unit: '斤', price: 5.50, barcode: 'ITEM000002'},
+            {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, barcode: 'ITEM000000'}];
+        var cartData = controllerCenter.shoppingCart(originalData);
+        should(cartData).eql(expireData);
+        done();
+    });
 
 });
