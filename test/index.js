@@ -2,8 +2,7 @@ var should = require('should');
 var Item = require('../src/model/item');
 var Privilege = require('../src/model/privilege');
 var controllerCenter = require('../src/controller_center');
-
-
+var scanner = require('../src/scanner');
 var AllItem = [
     new Item('ITEM000000', '可口可乐', '瓶', 3.00),
     new Item('ITEM000001', '羽毛球', '个', 1.00),
@@ -244,7 +243,7 @@ describe('ThoughtWorks homework', function () {
             {name: '苹果', count: 2, unit: '斤', price: 5.50, barcode: 'ITEM000002'}
         ];
         var privilege = [
-            new Privilege('discount_of_95', '95折', 2, ['ITEM000002','ITEM000000']),
+            new Privilege('discount_of_95', '95折', 2, ['ITEM000002', 'ITEM000000']),
             new Privilege('two_gift_one', '买二赠一', 1, ['ITEM000000', 'ITEM000001'])];
         var expireBox = {
             items: [
@@ -265,5 +264,22 @@ describe('ThoughtWorks homework', function () {
         should(calculatedBox).eql(expireBox);
         done();
     });
+
+
+    it('11 收银机扫描仪模块，将文本数据转化为JSON数据', function (done) {
+        var expireData = ['ITEM000001',
+            'ITEM000001',
+            'ITEM000001',
+            'ITEM000001',
+            'ITEM000001',
+            'ITEM000003-2',
+            'ITEM000005',
+            'ITEM000005',
+            'ITEM000005'];
+        var scannedData = scanner(require('path').join(__dirname, '../src/data/input.txt'));
+        should(scannedData).eql(expireData);
+        done();
+    });
+
 
 });

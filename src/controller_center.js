@@ -6,6 +6,8 @@ function ControllerCenter() {
 }
 
 
+
+
 ControllerCenter.calculator = function (box, privilege) {
     console.log('privilege: ', privilege);
 
