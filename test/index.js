@@ -206,4 +206,64 @@ describe('ThoughtWorks homework', function () {
         done();
     });
 
+
+    it('9 控制中心的计价模块, 有符合“买二赠一”优惠条件，又有符合“95折”优惠条件的商品，不冲突', function (done) {
+        var box = [
+            {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, barcode: 'ITEM000000'},
+            {name: '羽毛球', count: 6, unit: '个', price: 1.00, barcode: 'ITEM000001'},
+            {name: '苹果', count: 2, unit: '斤', price: 5.50, barcode: 'ITEM000002'}
+        ];
+        var privilege = [
+            new Privilege('discount_of_95', '95折', 2, ['ITEM000002']),
+            new Privilege('two_gift_one', '买二赠一', 1, ['ITEM000000', 'ITEM000001'])];
+        var expireBox = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 6.00},
+                {name: '羽毛球', count: 6, unit: '个', price: 1.00, subtotal: 4.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 10.45, economize: 0.55}
+            ],
+            present: [{
+                name: '买二赠一',
+                items: [
+                    {name: '可口可乐', count: 1, unit: '瓶'},
+                    {name: '羽毛球', count: 2, unit: '个'}]
+            }],
+            total: 20.45,
+            economy: 5.55
+        };
+        var calculatedBox = controllerCenter.calculator(box, privilege);
+        should(calculatedBox).eql(expireBox);
+        done();
+    });
+
+
+    it('10 控制中心的计价模块, 有符合“买二赠一”优惠条件，又有符合“95折”优惠条件的商品，冲突，以“买二赠一”优惠条件优先', function (done) {
+        var box = [
+            {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, barcode: 'ITEM000000'},
+            {name: '羽毛球', count: 6, unit: '个', price: 1.00, barcode: 'ITEM000001'},
+            {name: '苹果', count: 2, unit: '斤', price: 5.50, barcode: 'ITEM000002'}
+        ];
+        var privilege = [
+            new Privilege('discount_of_95', '95折', 2, ['ITEM000002','ITEM000000']),
+            new Privilege('two_gift_one', '买二赠一', 1, ['ITEM000000', 'ITEM000001'])];
+        var expireBox = {
+            items: [
+                {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 6.00},
+                {name: '羽毛球', count: 6, unit: '个', price: 1.00, subtotal: 4.00},
+                {name: '苹果', count: 2, unit: '斤', price: 5.50, subtotal: 10.45, economize: 0.55}
+            ],
+            present: [{
+                name: '买二赠一',
+                items: [
+                    {name: '可口可乐', count: 1, unit: '瓶'},
+                    {name: '羽毛球', count: 2, unit: '个'}]
+            }],
+            total: 20.45,
+            economy: 5.55
+        };
+        var calculatedBox = controllerCenter.calculator(box, privilege);
+        should(calculatedBox).eql(expireBox);
+        done();
+    });
+
 });

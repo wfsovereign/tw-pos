@@ -24,7 +24,7 @@ ControllerCenter.calculator = function (box, privilege) {
         });
     }
     function handlePrivilegeItem(item) {
-        var currentUsePrivilege = item.privilege[0];
+        var currentUsePrivilege = getCurrentUsePrivilege(item.privilege);
         if (currentUsePrivilege.name === 'two_gift_one') {
             var giftCount = Math.floor(item.count / 3);
             if (giftCount >= 1) {
@@ -46,6 +46,13 @@ ControllerCenter.calculator = function (box, privilege) {
 
         present = [gift];
 
+        function getCurrentUsePrivilege(arr) {
+            var rules = _.clone(arr);
+            rules = _.sortBy(rules, function (rule) {
+                return rule.priority;
+            });
+            return rules[0];
+        }
     }
 
     //console.log('boxxxxxx', JSON.stringify(box));
