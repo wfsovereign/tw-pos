@@ -4,7 +4,6 @@
   "description": "homework",
   "main": "index.js",
   "dependencies": {
-    "co": "4.6.0",
     "lodash": "4.6.1"
   },
   "devDependencies": {

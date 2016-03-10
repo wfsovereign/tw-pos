@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var Item = require('./model/item');
-var co = require('co');
+
+
 function ControllerCenter() {
 
 
@@ -13,7 +14,7 @@ ControllerCenter.shoppingCart = function (input) {
         new Item('ITEM000002', '苹果', '斤', 5.50)
     ];
 
-    var normalized = _.chain(input).groupBy(function (o) {
+    return _.chain(input).groupBy(function (o) {
         return o;
     }).map(function (value, key) {
         var bar = key, count = value.length;
@@ -29,15 +30,10 @@ ControllerCenter.shoppingCart = function (input) {
         });
         if (item) return {barcode: item.barcode, count: ele.count, unit: item.unit, price: item.price, name: item.name};
     }).compact().value();
-    console.log('ooooo :', normalized);
-    return normalized;
 };
 
 
 ControllerCenter.calculator = function (box, privilege) {
-    console.log('privilege: ', privilege);
-
-
     var closingData = {items: []}, total = 0, present = [], gift = {};
     if (privilege) {
         box.forEach(ele => {
@@ -56,7 +52,6 @@ ControllerCenter.calculator = function (box, privilege) {
         if (currentUsePrivilege.name === 'two_gift_one') {
             var giftCount = Math.floor(item.count / 3);
             if (giftCount >= 1) {
-                console.log('gift count: ', giftCount);
                 item.subtotal = (item.count - giftCount) * item.price;
                 closingData.economy = closingData.economy || 0;
                 closingData.economy += giftCount * item.price;
@@ -83,7 +78,6 @@ ControllerCenter.calculator = function (box, privilege) {
         }
     }
 
-    //console.log('boxxxxxx', JSON.stringify(box));
     box.forEach(ele => {
         if (ele.privilege) handlePrivilegeItem(ele);
         else ele.subtotal = ele.count * ele.price;
@@ -94,9 +88,6 @@ ControllerCenter.calculator = function (box, privilege) {
     });
     closingData.total = total;
     if (present[0] && present[0].name) closingData.present = present;
-    console.log('-------------------------');
-
-    console.log('closing data: ', JSON.stringify(closingData));
     return closingData;
 };
 
