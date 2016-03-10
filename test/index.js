@@ -163,7 +163,7 @@ describe('ThoughtWorks homework', function () {
             {name: '羽毛球', count: 5, unit: '个', price: 1.00, barcode: 'ITEM000001'},
             {name: '苹果', count: 2, unit: '斤', price: 5.50, barcode: 'ITEM000002'}
         ];
-        var privilege = new Privilege('two_gift_one', '买二赠一', 1, ['ITEM000000', 'ITEM000001']);
+        var privilege = [new Privilege('two_gift_one', '买二赠一', 1, ['ITEM000000', 'ITEM000001'])];
         var expireBox = {
             items: [
                 {name: '可口可乐', count: 3, unit: '瓶', price: 3.00, subtotal: 6.00},

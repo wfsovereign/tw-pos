@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 function ControllerCenter() {
 
 
@@ -6,13 +8,54 @@ function ControllerCenter() {
 
 ControllerCenter.calculator = function (box, privilege) {
     console.log('privilege: ', privilege);
-    var closingData = {items: []}, total = 0;
+
+
+    var closingData = {items: []}, total = 0, present = [], gift = {};
+    if (privilege) {
+        box.forEach(ele => {
+            if (ele.barcode) {
+                privilege.forEach(p => {
+                    if (p.barcodes.indexOf(ele.barcode) > -1) {
+                        ele.privilege = ele.privilege || [];
+                        ele.privilege.push({name: p.name, showName: p.showName, priority: p.priority});
+                    }
+                });
+            }
+        });
+    }
+    function handlePrivilegeItem(item) {
+        var currentUsePrivilege = item.privilege[0];
+        if (currentUsePrivilege.name === 'two_gift_one') {
+            var giftCount = Math.floor(item.count / 3);
+            if (giftCount >= 1) {
+                console.log('gift count: ', giftCount);
+                item.subtotal = (item.count - giftCount) * item.price;
+                closingData.economy = closingData.economy || 0;
+                closingData.economy += giftCount * item.price;
+                gift.name = currentUsePrivilege.showName;
+                gift.items = gift.items || [];
+                gift.items.push({name: item.name, unit: item.unit, count: giftCount});
+            }
+        }
+
+        present = [gift];
+
+    }
+
+    //console.log('boxxxxxx', JSON.stringify(box));
     box.forEach(ele => {
-        ele.subtotal = ele.count * ele.price;
+        if (ele.privilege) handlePrivilegeItem(ele);
+        else ele.subtotal = ele.count * ele.price;
+        if (ele.barcode) delete ele.barcode;
+        if (ele.privilege) delete ele.privilege;
         closingData.items.push(ele);
         total += ele.subtotal;
     });
     closingData.total = total;
+    if (present[0]) closingData.present = present;
+    console.log('-------------------------');
+
+    console.log('closing data: ', JSON.stringify(closingData));
     return closingData;
 };
 
