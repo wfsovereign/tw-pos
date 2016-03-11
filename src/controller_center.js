@@ -144,21 +144,12 @@ ControllerCenter.prototype.calculator = function (box, privilege) {
  * @returns {string}
  */
 ControllerCenter.prototype.print = function (box) {
-    function getStrOfPrice(price) {
-        return price.toFixed(2);
-    }
-
-    function economizeStr(price) {
-        if (price) return '，节省' + getStrOfPrice(price) + '(元)';
-        return '';
-    }
-
-    var head = '***<没钱赚商店>购物清单***\n', splitLine = '----------------------\n';
-    var middle = '';
+    var head = '***<没钱赚商店>购物清单***\n', splitLine = '----------------------\n', middle = '', additionMiddle = '',
+        end = '**********************\n';
     box.items.forEach(ele => {
-        middle += '名称：' + ele.name + '，数量：' + ele.count + ele.unit + '，单价：' + getStrOfPrice(ele.price) + '(元)，小计：' + getStrOfPrice(ele.subtotal) + '(元)' + economizeStr(ele.economize) + '\n';
+        middle += '名称：' + ele.name + '，数量：' + ele.count + ele.unit + '，单价：' + getStrOfPrice(ele.price)
+            + '(元)，小计：' + getStrOfPrice(ele.subtotal) + '(元)' + economizeStr(ele.economize) + '\n';
     });
-    var additionMiddle = '';
     if (box.present) {
         additionMiddle += splitLine;
         box.present.forEach((ele) => {
@@ -172,10 +163,29 @@ ControllerCenter.prototype.print = function (box) {
         '总计：' + getStrOfPrice(box.total) + '(元)\n';
     var additionTail = '';
     if (box.economy) additionTail += '节省：' + getStrOfPrice(box.economy) + '(元)\n';
-    var end = '**********************\n';
+
+    function getStrOfPrice(price) {
+        return price.toFixed(2);
+    }
+
+    function economizeStr(price) {
+        if (price) return '，节省' + getStrOfPrice(price) + '(元)';
+        return '';
+    }
 
     return head + middle + additionMiddle + tail + additionTail + end;
 };
 
+/**
+ * @method autoExecute
+ * @description 自执行方法，调用控制中心对象的购物车、计价、打印模块，返回相应的账单结果
+ * @param scannedData
+ * @param privilege
+ * @returns {string}
+ */
+ControllerCenter.prototype.autoExecute = function (scannedData, privilege) {
+    var self = this;
+    return self.print(self.calculator(self.shoppingCart(scannedData), privilege));
+};
 
 module.exports = ControllerCenter;
