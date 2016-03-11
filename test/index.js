@@ -1,7 +1,8 @@
 var should = require('should');
 var Item = require('../src/model/item');
 var Privilege = require('../src/model/privilege');
-var controllerCenter = require('../src/controller_center');
+var ControllerCenter = require('../src/controller_center');
+var controllerCenter = new ControllerCenter();
 var scanner = require('../src/scanner');
 var AllItem = [
     new Item('ITEM000000', '可口可乐', '瓶', 3.00),
